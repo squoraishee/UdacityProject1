@@ -66,12 +66,13 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
         init();
     }
 
-    public void init() {
+    private void init() {
         sortSpinner = (Spinner)findViewById(R.id.sort_spinner);
         movieGridView = (GridView)findViewById(R.id.movie_grid_view);
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemSelected(AdapterView<?> parent,
+                                               View view, int position, long id) {
                         switch (position) {
                             case 0: {
                                 getHigestRatedMovies();
@@ -85,21 +86,23 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
+                    public void onNothingSelected(AdapterView<?> parent) {}
         });
         getHigestRatedMovies();
     }
 
-    public void getMostPopularMovies() {
-        DownloadApiDataTask task = new DownloadApiDataTask(this, new Callback<ArrayList<MovieItem>>() {
+    private void getMostPopularMovies() {
+        DownloadApiDataTask task = new DownloadApiDataTask(this,
+                new Callback<ArrayList<MovieItem>>() {
             @Override
             public void onExecute(final ArrayList<MovieItem> result) {
-                movieGridView.setAdapter(new MoviePosterAdapter(PopularMoviesMainActivity.this, result));
+                movieGridView.setAdapter(new MoviePosterAdapter(
+                        PopularMoviesMainActivity.this, result));
                 movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent,
+                                            View view, int position, long id) {
                         final Dialog dialog = new Dialog(PopularMoviesMainActivity.this);
                         dialog.setContentView(R.layout.details_layout);
                         dialog.setTitle("Movie Details");
@@ -110,7 +113,8 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
                         titleText.setText(result.get(position).getTitle());
                         TextView ratingText = (TextView) dialog.findViewById(R.id.rating_text);
                         ratingText.setText(result.get(position).getVoteAverage());
-                        TextView releaseDateText = (TextView) dialog.findViewById(R.id.release_date_text);
+                        TextView releaseDateText = (TextView)
+                                dialog.findViewById(R.id.release_date_text);
                         releaseDateText.setText(result.get(position).getReleaseDate());
                         TextView synopsisText = (TextView) dialog.findViewById(R.id.synopsis_text);
                         synopsisText.setText(result.get(position).getPlotSynopsis());
@@ -122,15 +126,18 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
         task.execute(MOST_POPULAR_MOVIES_API);
     }
 
-    public void getHigestRatedMovies() {
-        DownloadApiDataTask task = new DownloadApiDataTask(this, new Callback<ArrayList<MovieItem>>() {
+    private void getHigestRatedMovies() {
+        DownloadApiDataTask task = new DownloadApiDataTask(this,
+                new Callback<ArrayList<MovieItem>>() {
             @Override
             public void onExecute(final ArrayList<MovieItem> result) {
-                movieGridView.setAdapter(new MoviePosterAdapter(PopularMoviesMainActivity.this, result));
+                movieGridView.setAdapter(new
+                        MoviePosterAdapter(PopularMoviesMainActivity.this, result));
                 movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent,
+                                            View view, int position, long id) {
                         final Dialog dialog = new Dialog(PopularMoviesMainActivity.this);
                         dialog.setContentView(R.layout.details_layout);
                         dialog.setTitle("Movie Details");
@@ -141,7 +148,8 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
                         titleText.setText(result.get(position).getTitle());
                         TextView ratingText = (TextView) dialog.findViewById(R.id.rating_text);
                         ratingText.setText(result.get(position).getVoteAverage());
-                        TextView releaseDateText = (TextView) dialog.findViewById(R.id.release_date_text);
+                        TextView releaseDateText = (TextView)
+                                dialog.findViewById(R.id.release_date_text);
                         releaseDateText.setText(result.get(position).getReleaseDate());
                         TextView synopsisText = (TextView) dialog.findViewById(R.id.synopsis_text);
                         synopsisText.setText(result.get(position).getPlotSynopsis());
@@ -177,6 +185,9 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * A custom adapter for the gridview used for storing the movies
+     */
     public static class MoviePosterAdapter extends BaseAdapter {
         private Context context;
         private ArrayList<MovieItem> movieArray;
@@ -248,6 +259,9 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * A task used to download the responses from the dbMoviesAPI
+     */
     static class DownloadApiDataTask extends AsyncTask<String, String, ArrayList<MovieItem>> {
 
         Context context;
@@ -317,7 +331,10 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
             callback.onExecute(result);
         }
     }
-    //Movie details layout contains title, release date, movie poster, vote average, and plot synopsis.
+
+    /**
+     * A movies details model class for storing relavent movies data
+     */
     public static class MovieItem {
         private String imageUrl;
         private Bitmap imageData;
@@ -326,7 +343,8 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
         private String voteAverage;
         private String plotSynopsis;
 
-        public MovieItem(String title, String imageUrl, String releaseDate, String voteAverage, String plotSynopsis) {
+        public MovieItem(String title, String imageUrl,
+                         String releaseDate, String voteAverage, String plotSynopsis) {
             this.title = title;
             this.imageUrl = imageUrl;
             this.releaseDate = releaseDate;
@@ -383,10 +401,20 @@ public class PopularMoviesMainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * A generic callback interface
+     *
+     * @param <T>
+     */
     public interface Callback<T> {
         void onExecute(T result);
     }
 
+    /**
+     * A convenience method for displaying toasts
+     *
+     * @param message
+     */
     public void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
